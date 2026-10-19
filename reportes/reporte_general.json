@@ -1,0 +1,32 @@
+[
+    {
+        "nombre": "Leanne Graham",
+        "email": "Sincere@april.biz",
+        "ciudad": "Gwenborough",
+        "cantidad_posts": 10
+    },
+    {
+        "nombre": "Ervin Howell",
+        "email": "Shanna@melissa.tv",
+        "ciudad": "Wisokyburgh",
+        "cantidad_posts": 10
+    },
+    {
+        "nombre": "Clementine Bauch",
+        "email": "Nathan@yesenia.net",
+        "ciudad": "McKenziehaven",
+        "cantidad_posts": 10
+    },
+    {
+        "nombre": "Patricia Lebsack",
+        "email": "Julianne.OConner@kory.org",
+        "ciudad": "South Elvis",
+        "cantidad_posts": 10
+    },
+    {
+        "nombre": "Chelsey Dietrich",
+        "email": "Lucio_Hettinger@annie.ca",
+        "ciudad": "Roscoeview",
+        "cantidad_posts": 10
+    }
+]

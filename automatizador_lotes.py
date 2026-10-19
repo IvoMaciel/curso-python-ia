@@ -1,34 +1,37 @@
-import requests
-import json
-import os
-from dotenv import load_dotenv
-from automatizador_lotes_funciones import obtener_datos_usuario, obtener_posts_usuario, guardar_reporte
+from automatizador_lotes_funciones import obtener_datos_usuario, obtener_posts_usuario, guardar_reporte, guardar_reporte_general, cantidad_usuarios, buscar_usuario_ciudad
 
-# Revisa si existe una carpeta llamada reportes. Si no existe, créala automáticamente". Esto se hace con una sola línea de código estandarizada:
-# Carga las variables de entorno definidas en el archivo .env oculto
-load_dotenv()
-api_key = os.getenv("API_BASE_URL")
-
-for id_usuario in range(1, 6):
-    usuario, status_code = obtener_datos_usuario(api_key, id_usuario)
-    if usuario is not None:
-        usuario_post = obtener_posts_usuario(id_usuario, api_key)
-        print(f"El nombre del usuario es {usuario['name']} y vive en la ciudad {usuario['address']['city']} en la calle {usuario['address']['street']}")
-        print(f"Numero de publicaciones del usuario {len(usuario_post)}")
-
-        nombre = usuario['name']
-        ciudad = usuario['address']['city']
-        calle = usuario['address']['street']
-        cantidad_post = len(usuario_post)
+lista_general = []
+# Bucle principal de automatización por lotes
+cantidad = cantidad_usuarios()
+for id_usuario in range(1, cantidad + 1):
+    usuario, status_code = obtener_datos_usuario(id_usuario)
     
-    # Crea un diccionario estructurado limpio con la información procesada
-        reporte_final = {"nombre": nombre, "ciudad": ciudad, "calle": calle, "cantidad": cantidad_post}
-        print(reporte_final)
+    if usuario is not None:
+        # Obtenemos los posts del usuario actual
+        posts = obtener_posts_usuario(id_usuario)
+        
+        print(f"Procesando usuario: {usuario['name']} (Ciudad: {usuario['address']['city']})")
 
-    # 6. Persistencia local: Guarda el diccionario en un archivo JSON dinámico en el disco duro
+        # Estructuración limpia del reporte incluyendo los posts
+        reporte_final = {
+            "nombre": usuario['name'],
+            "email": usuario['email'],
+            "ciudad": usuario['address']['city'],
+            "cantidad_posts": len(posts)
+        }
+
+        lista_general.append(reporte_final)
+        # Persistencia utilizando la capa de servicios
         guardar_reporte(id_usuario, reporte_final)
-    else: 
-    # Control de errores si el ID ingresado no existe en el servidor (ej. código 404)
-        print(f"Error: El servidor respondió con código {status_code}. El usuario no existe.")
-        continue
+        print(f"-> Reporte del usuario {id_usuario} guardado con éxito con {len(posts)} posts.\n")
+        
+    else:
+        print(f"-> Error: El servidor respondió con código {status_code}. No se pudo procesar el usuario {id_usuario}.\n")
 
+
+if len(lista_general)> 0:
+    guardar_reporte_general(lista_general)
+    print("La lista general de usuarios se ha guardado con exito")
+
+ciudad_a_buscar = input("Ingresa el nombre de una ciudad para buscar usuarios (ej. Gwenborough): ")
+buscar_usuario_ciudad(ciudad_a_buscar)
